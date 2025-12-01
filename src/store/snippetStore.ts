@@ -16,6 +16,7 @@ interface SnippetState {
   getSnippetsByTag: (tagId: string) => Snippet[];
   getSnippetsBySearch: (query: string) => Snippet[];
   getPinnedSnippets: () => Snippet[];
+  reset: () => void;
 }
 
 export const useSnippetStore = create<SnippetState>((set, get) => ({
@@ -205,5 +206,9 @@ export const useSnippetStore = create<SnippetState>((set, get) => ({
 
   getPinnedSnippets: () => {
     return get().snippets.filter((snippet) => snippet.isPinned);
+  },
+
+  reset: () => {
+    set({ snippets: [], loading: false, error: null });
   },
 }));

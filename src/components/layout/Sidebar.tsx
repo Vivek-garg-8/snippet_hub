@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronRight, FolderPlus, Tag, Star, X, LogOut, User } from 'lucide-react';
+import { toast } from 'sonner';
 import { useAppStore } from '../../store/appStore';
 import { useCategoryStore } from '../../store/categoryStore';
 import { useTagStore } from '../../store/tagStore';
@@ -38,6 +39,7 @@ const Sidebar: React.FC = () => {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    toast.success('Logged out successfully');
   };
 
   if (!sidebarOpen) return null;

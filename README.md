@@ -4,15 +4,16 @@ A modern and intuitive application for organizing your code snippets, notes, and
 
 ## Features
 
-*   **Authentication**: Secure user authentication powered by Supabase.
+*   **Authentication**: Secure user authentication powered by Supabase with robust session management.
 *   **Cloud Storage**: Your data is safely stored in the cloud using Supabase, ensuring access from anywhere.
 *   **Snippet Management**: Create, edit, delete, and pin various types of snippets.
 *   **Multiple Snippet Types**: Supports text, code, markdown, and link snippets.
 *   **Code Editor**: Integrated CodeMirror editor for code snippets with syntax highlighting.
 *   **Markdown Preview**: Live preview for markdown content.
-*   **Categorization**: Organize snippets into nested categories for better structure.
-*   **Tagging System**: Assign custom tags with distinct colors to snippets for quick filtering.
+*   **Categorization**: Organize snippets into nested categories. Selecting a parent category automatically includes snippets from its subcategories.
+*   **Tagging System**: Assign custom tags with distinct colors. Tags are persisted across sessions and synced to your account.
 *   **Search Functionality**: Efficiently search through your snippets by title, content, tags, and categories.
+*   **Toast Notifications**: Real-time feedback for actions like login, logout, and data updates.
 *   **Dark Mode**: Toggle between light and dark themes for comfortable viewing.
 *   **Responsive Design**: Optimized for various screen sizes with a collapsible sidebar.
 

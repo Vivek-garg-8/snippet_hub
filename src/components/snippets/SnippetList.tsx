@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useSnippetStore } from '../../store/snippetStore';
 import { useAppStore } from '../../store/appStore';
+import { useCategoryStore } from '../../store/categoryStore';
 import SnippetCard from './SnippetCard';
 import SnippetFormModal from './SnippetFormModal';
 import EmptyState from '../ui/EmptyState';
@@ -8,44 +9,48 @@ import EmptyState from '../ui/EmptyState';
 const SnippetList: React.FC = () => {
   const { snippets } = useSnippetStore();
   const { viewMode, selectedCategoryId, selectedTagId } = useAppStore();
+  const { getDescendantIds } = useCategoryStore();
   const [editingSnippetId, setEditingSnippetId] = useState<string | null>(null);
-  
+
   const filteredSnippets = useMemo(() => {
     let filtered = [...snippets];
-    
+
     if (selectedCategoryId) {
-      filtered = filtered.filter(snippet => snippet.categoryId === selectedCategoryId);
+      const categoryIds = getDescendantIds(selectedCategoryId);
+      filtered = filtered.filter(snippet =>
+        snippet.categoryId && categoryIds.includes(snippet.categoryId)
+      );
     }
-    
+
     if (selectedTagId) {
       filtered = filtered.filter(snippet => snippet.tags.includes(selectedTagId));
     }
-    
+
     return filtered.sort((a, b) => b.updatedAt - a.updatedAt);
-  }, [snippets, selectedCategoryId, selectedTagId]);
-  
+  }, [snippets, selectedCategoryId, selectedTagId, getDescendantIds]);
+
   const handleEdit = (id: string) => {
     setEditingSnippetId(id);
   };
-  
+
   const handleCloseEdit = () => {
     setEditingSnippetId(null);
   };
-  
+
   if (filteredSnippets.length === 0) {
     return (
-      <EmptyState 
+      <EmptyState
         message={
-          selectedCategoryId 
-            ? "No snippets in this category" 
-            : selectedTagId 
-            ? "No snippets with this tag"
-            : "No snippets yet"
-        } 
+          selectedCategoryId
+            ? "No snippets in this category"
+            : selectedTagId
+              ? "No snippets with this tag"
+              : "No snippets yet"
+        }
       />
     );
   }
-  
+
   return (
     <div>
       <div className={
@@ -61,7 +66,7 @@ const SnippetList: React.FC = () => {
           />
         ))}
       </div>
-      
+
       {editingSnippetId && (
         <SnippetFormModal
           snippetId={editingSnippetId}

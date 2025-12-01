@@ -24,17 +24,50 @@ export const useAuthStore = create<AuthState>((set) => ({
             set({ session, user: session?.user ?? null, loading: false });
 
             if (session?.user) {
-                // Fetch snippets if user is logged in
+                // Fetch snippets and tags if user is logged in
                 const { useSnippetStore } = await import('./snippetStore');
-                useSnippetStore.getState().fetchSnippets();
+                const { useTagStore } = await import('./tagStore');
+
+                // Fetch data in parallel
+                await Promise.all([
+                    useSnippetStore.getState().fetchSnippets(),
+                    useTagStore.getState().fetchTags()
+                ]);
+            } else {
+                // Clear data on logout
+                try {
+                    const { useSnippetStore } = await import('./snippetStore');
+                    const { useTagStore } = await import('./tagStore');
+
+                    useSnippetStore.getState().reset?.(); // Assuming snippetStore might have reset
+                    useTagStore.getState().reset();
+                } catch (error) {
+                    console.error('Error resetting stores:', error);
+                }
             }
 
             // Listen for changes
             supabase.auth.onAuthStateChange(async (_event, session) => {
                 set({ session, user: session?.user ?? null, loading: false });
+
                 if (session?.user) {
                     const { useSnippetStore } = await import('./snippetStore');
-                    useSnippetStore.getState().fetchSnippets();
+                    const { useTagStore } = await import('./tagStore');
+
+                    await Promise.all([
+                        useSnippetStore.getState().fetchSnippets(),
+                        useTagStore.getState().fetchTags()
+                    ]);
+                } else {
+                    try {
+                        const { useSnippetStore } = await import('./snippetStore');
+                        const { useTagStore } = await import('./tagStore');
+
+                        useSnippetStore.getState().reset?.();
+                        useTagStore.getState().reset();
+                    } catch (error) {
+                        console.error('Error resetting stores:', error);
+                    }
                 }
             });
         } catch (error) {

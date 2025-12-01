@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useNavigate } from 'react-router-dom';
-import { Lock, Mail, User, ArrowRight, Loader2 } from 'lucide-react';
+import { Lock, Mail, ArrowRight, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 export const Auth = () => {
     const [isLogin, setIsLogin] = useState(true);
@@ -23,6 +24,7 @@ export const Auth = () => {
                     password,
                 });
                 if (error) throw error;
+                toast.success('Welcome back!');
                 navigate('/');
             } else {
                 const { error } = await supabase.auth.signUp({
@@ -35,10 +37,12 @@ export const Auth = () => {
                 // If email confirmation is disabled in Supabase, they will be logged in.
                 // If enabled, they need to check email.
                 // Let's assume auto-login or show success.
-                alert('Check your email for the confirmation link!');
+                // Let's assume auto-login or show success.
+                toast.success('Account created! Please check your email.');
             }
         } catch (err: any) {
             setError(err.message);
+            toast.error(err.message);
         } finally {
             setLoading(false);
         }

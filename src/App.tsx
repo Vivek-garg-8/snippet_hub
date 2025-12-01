@@ -8,6 +8,7 @@ import { useCategoryStore } from './store/categoryStore';
 import { useTagStore } from './store/tagStore';
 import { useAppStore } from './store/appStore';
 import { Loader2 } from 'lucide-react';
+import { Toaster } from 'sonner';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { session, loading } = useAuthStore();
@@ -37,26 +38,32 @@ function App() {
     initialize();
   }, [initialize]);
 
-  // Add some initial data if empty
+  // Add some initial data if empty and not initialized before
   useEffect(() => {
-    if (categories.length === 0) {
-      const codeId = addCategory('Code', null);
-      const notesId = addCategory('Notes', null);
+    const hasInitialized = localStorage.getItem('app_initialized');
 
-      addCategory('JavaScript', codeId);
-      addCategory('React', codeId);
-      addCategory('CSS', codeId);
+    if (!hasInitialized) {
+      if (categories.length === 0) {
+        const codeId = addCategory('Code', null);
+        const notesId = addCategory('Notes', null);
 
-      addCategory('Project Ideas', notesId);
-      addCategory('Learning Resources', notesId);
-    }
+        addCategory('JavaScript', codeId);
+        addCategory('React', codeId);
+        addCategory('CSS', codeId);
 
-    if (tags.length === 0) {
-      addTag('important', '#EF4444'); // red
-      addTag('reference', '#F59E0B'); // amber
-      addTag('tutorial', '#10B981'); // emerald
-      addTag('bug', '#EC4899');      // pink
-      addTag('idea', '#8B5CF6');     // violet
+        addCategory('Project Ideas', notesId);
+        addCategory('Learning Resources', notesId);
+      }
+
+      if (tags.length === 0) {
+        addTag('important', '#EF4444'); // red
+        addTag('reference', '#F59E0B'); // amber
+        addTag('tutorial', '#10B981'); // emerald
+        addTag('bug', '#EC4899');      // pink
+        addTag('idea', '#8B5CF6');     // violet
+      }
+
+      localStorage.setItem('app_initialized', 'true');
     }
   }, []);
 
@@ -75,6 +82,7 @@ function App() {
           }
         />
       </Routes>
+      <Toaster position="top-right" richColors />
     </BrowserRouter>
   );
 }
